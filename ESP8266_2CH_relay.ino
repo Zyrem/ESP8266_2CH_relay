@@ -2,9 +2,9 @@
 
 #include <ESP8266WiFi.h>
 // Replace with your network credentials
-const char* ssid = "HomeBridge"; // Input your wifi network name
-const char* password = "asdasdasd"; // Input your wifi password
-const char* customhostname = "ESP8266Node.local";
+const char* ssid = "SSID NAME"; // Input your wifi network name
+const char* password = "PASSWORD"; // Input your wifi password
+const char* customhostname = "ESP8266Node.local"; // Your custom local name
 // Set web server port number to 80
 WiFiServer server(80);
 // Variable to store the HTTP request
@@ -24,10 +24,10 @@ unsigned long lastDebounceTimeB = 0;  // the last time the output pin was toggle
 unsigned long debounceDelayB = 50;    // the debounce time; increase if the output flickers
 
 // Assign output variables to GPIO pins
-const int relayAPin = 13; // GPIO5 D1
-const int relayBPin = 12; // GPIO4 D2
-const int buttonAPin = 0;    // the number of the pushbutton pin
-const int buttonBPin = 2;    // the number of the pushbutton pin
+const int relayAPin = 13; // Relay at GPIO13 D7
+const int relayBPin = 12; // Relay at GPIO12 D6
+const int buttonAPin = 5;    // Button to GPIO5 D1
+const int buttonBPin = 4;    // Button to GPIO4 D2, solder to select
 
 
 void setup() {
