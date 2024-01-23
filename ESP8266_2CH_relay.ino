@@ -29,6 +29,9 @@ const int relayBPin = 12; // Relay at GPIO12 D6
 const int buttonAPin = 5;    // Button to GPIO5 D1
 const int buttonBPin = 4;    // Button to GPIO4 D2, solder to select
 
+int connection_timeout_threshold = 15;  /* Number of attempts to connect to a Wi-Fi network before
+                                         * the device will suggest changing connection credentials.
+                                         */
 
 void setup() {
   Serial.begin(115200);
@@ -48,10 +51,17 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
+  int timeout_counter = 0;
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
+    ++timeout_counter;
+
+    if (timeout_counter > connection_timeout_threshold) {
+        Serial.println("Connection failed, please consider changing your login credentials.");
+    }
   }
+  
   // Print local IP address and start web server
   Serial.println("");
   Serial.println("WiFi connected.");
@@ -64,6 +74,7 @@ void setup() {
   
   server.begin();
 }
+
 void loop() {
   WiFiClient client = server.available();   // Listen for incoming clients
   if (client) {                             // If a new client connects,
@@ -74,7 +85,7 @@ void loop() {
         char c = client.read();             // read a byte, then
         Serial.write(c);                    // print it out the serial monitor
         header += c;
-        if (c == 'n') {                    // if the byte is a newline character
+        if (c == '\n') {                    // if the byte is a newline character
           // if the current line is blank, you got two newline characters in a row.
           // that's the end of the client HTTP request, so send a response:
           if (currentLine.length() == 0) {
@@ -152,7 +163,7 @@ void loop() {
           } else { // if you got a newline, then clear currentLine
             currentLine = "";
           }
-        } else if (c != 'r') {  // if you got anything else but a carriage return character,
+        } else if (c != '\r') {  // if you got anything else but a carriage return character,
           currentLine += c;      // add it to the end of the currentLine
         }
       }
